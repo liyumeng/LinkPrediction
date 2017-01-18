@@ -16,6 +16,7 @@ author_network_file='data/tmp/author_network.txt'
 #生成论文网络训练文件
 train_df=pd.read_csv(train_file,sep=' ',names=['sid','tid','label'])
 train_df[train_df.label==1].to_csv(node_network_file,sep='\t',index=False,header=False,columns=['sid','tid'])
+print('已保存论文网络文件',node_network_file)
 
 #生成作者网络训练文件
 node_df=pd.read_csv(node_file,names=['id','year','title','authors','journal','abstract'])
@@ -62,8 +63,9 @@ for row in train_df.itertuples():
             add_authors(source.author_set[i],source.author_set[j])
             
     for i in range(len(target.author_set)):
-        for j in range(i+1,len(target.author_set)):
-            add_authors(target.author_set[i],target.author_set[j])
+        for j in range(len(target.author_set)):
+            if i!=j:
+                add_authors(target.author_set[i],target.author_set[j])
     
     if count % 10000 == 0:
         print(count, "items processsed")

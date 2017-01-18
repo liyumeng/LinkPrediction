@@ -108,7 +108,7 @@ def get_features(df):
         set_feature('abstract_svd_similar',cosine(abstract_svd[row.sindex],abstract_svd[row.tindex]))
         # 节点的度
         set_feature('in_degree_target',in_degree.get(row.tid,0))
-        set_feature('out_degree_target',out_degree.get(row.sid,0))
+        set_feature('out_degree_source',out_degree.get(row.sid,0))
         # jaccard index
         sn=G.neighbors(row.sid)
         tn=G.neighbors(row.tid)
@@ -126,8 +126,7 @@ def get_features(df):
         set_feature('g_pagerank_target',g_pagerank.get(row.tid,0))
         set_feature('g_aver_neighbour_source',g_aver_neighbor.get(row.sid,0))
         set_feature('g_aver_neighbour_target',g_aver_neighbor.get(row.tid,0))
-        set_feature('g_aver_degree_source',g_aver_degree.get(row.sid,0))
-        set_feature('g_aver_degree_target',g_aver_degree.get(row.tid,0))
+
 
         if i%10000==0:
             print(i,"training examples processsed")
@@ -161,7 +160,6 @@ if __name__=='__main__':
     g_kcore=nx.core_number(G)
     g_pagerank=nx.pagerank(G)
     g_aver_neighbor=nx.average_neighbor_degree(G)
-    g_aver_degree=nx.average_degree_connectivity(G)
         
     train_xs=get_features(train_df)
     test_xs=get_features(test_df)
