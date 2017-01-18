@@ -7,23 +7,40 @@
 ## 1. 运行说明
 
 1. 下载语料放在data/raw文件夹下，结构如下：
-    data/raw/training_set.txt
-    data/raw/testing_set.txt
-    data/raw/node_information.csv
+
+        data/raw/training_set.txt
+    
+        data/raw/testing_set.txt
+    
+        data/raw/node_information.csv
+
 2. 运行脚本run.sh，耗时大概4小时，预测结果将输出到data/raw/output.txt
 
 ## 2. run.sh脚本处理流程说明
 
 1. 自动下载LINE工具，用于生成低维稠密的网络节点向量。
 2. 自动运行process_network_data.py，根据原始语料生成LINE训练过程中使用的语料。
-    输入文件：data/raw/training_set.txt, data/raw/node_information.csv
+
+    输入文件：
+    
+        data/raw/training_set.txt
+        
+        data/raw/node_information.csv
+
     输出文件：
+
         data/tmp/node_network.txt
+
         data/tmp/author_ids.pkl
+
         data/tmp/author_network.txt
+
 3. 自动拷贝utils/train_LINE.sh脚本到LINE工具的可执行文件同级目录中，并运行。生成两个结果文件：
-    data/features/node_network.bin      论文网络节点向量
-    data/features/author_network.bin    作者网络节点向量
+
+        data/features/node_network.bin      论文网络节点向量
+    
+        data/features/author_network.bin    作者网络节点向量
+    
 4. 自动运行test.py，完成特征工程，模型训练及预测的所有过程。
 
 ## 3. 任务中使用的特征列表
