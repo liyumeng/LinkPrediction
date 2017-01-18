@@ -28,37 +28,66 @@
 
 ## 3. 任务中使用的特征列表
 
-1. year_dis 发表年份的差值
-2. year_source  源论文发表年份
-3. year_target  被引论文发表年份
-4. common_author  论文共同作者数
-5. overlap_title  论文标题的共现词数
-6. overlap_journal  期刊的共现词数
-7. abstract_tfidf_similar  摘要tfidf的相似度
-8. abstract_svd_similar  摘要svd降维后的相似度
-9. in_degree_target  被引论文的入度
-10. out_degree_source  源论文的出度
-11. g_jaccard_index  无向图中jaccard index值
-12. g_neighbour_sqrt  无向图中公共邻居的比例
-13. g_neighbour_pearson  无向图邻居的pearson coefficient
-14. g_cluster_source  无向图中源论文的聚类系数
-15. g_cluster_target  无向图中被引论文的聚类系数
-16. g_kcore_source  无向图中源论文的kcore
-17. g_kcore_target  无向图中被引论文的kcore
-18. g_pagerank_source  无向图中源论文的pagerank值
-19. g_pagerank_target  无向图中被引论文的pagerank值
-20. g_aver_neighbour_source  无向图中源论文的平均邻居数
-21. g_aver_neighbour_target  无向图中被引论文的平均邻居数
-
+- year_dis 发表年份的差值
+- year_source  源论文发表年份
+- year_target  被引论文发表年份
+- common_author  论文共同作者数
+- overlap_title  论文标题的共现词数
+- overlap_journal  期刊的共现词数
+- abstract_tfidf_similar  摘要tfidf的相似度
+```
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer=TfidfVectorizer(min_df=2)
+abstract_tfidf=vectorizer.fit_transform(node_df.abstract)
+cosine(abstract_tfidf[row.sindex].toarray()[0],abstract_tfidf[row.tindex].toarray()[0])
+```
+- abstract_svd_similar  摘要svd降维后的相似度
+```
+from sklearn.decomposition import TruncatedSVD
+abstract_svd=TruncatedSVD(n_components=100,random_state=100).fit_transform(abstract_tfidf)
+cosine(abstract_svd[row.sindex],abstract_svd[row.tindex])
+```
+- in_degree_target  被引论文的入度
+- out_degree_source  源论文的出度
+- g_jaccard_index  无向图中jaccard index值
+- g_neighbour_sqrt  无向图中公共邻居的比例
+- g_neighbour_pearson  无向图邻居的pearson coefficient
+- g_cluster_source  无向图中源论文的聚类系数
+- g_cluster_target  无向图中被引论文的聚类系数
+```
+import networkx as nx
+g_cluster=nx.algorithms.cluster.clustering(G)
+g_cluster.get(row.sid,0)
+```
+- g_kcore_source  无向图中源论文的kcore
+- g_kcore_target  无向图中被引论文的kcore
+```
+g_kcore=nx.core_number(G)
+g_kcore.get(row.sid,0)
+```
+- g_pagerank_source  无向图中源论文的pagerank值
+- g_pagerank_target  无向图中被引论文的pagerank值
+```
+g_pagerank=nx.pagerank(G)
+g_pagerank.get(row.sid,0)
+```
+- g_aver_neighbour_source  无向图中源论文的平均邻居数
+- g_aver_neighbour_target  无向图中被引论文的平均邻居数
+```
+g_aver_neighbor=nx.average_neighbor_degree(G)
+g_aver_neighbor.get(row.tid,0)
+```
 ## 4. Network Embedding
-
 ## 5. Doc2vec
-
 ## 6. 分类器
 在本任务中尝试了Logistic Regression、SVM、GBDT、XGBoost及LightGBM几种分类器，其中LightGBM表现最好。
 ```
-    gbm = lgb.LGBMClassifier(objective='binary',
-                            num_leaves=31,
-                            learning_rate=0.05,
-                            n_estimators=1000,subsample=0.8,)
+gbm = lgb.LGBMClassifier(objective='binary',
+                        num_leaves=31,
+                        learning_rate=0.05,
+                        n_estimators=1000,subsample=0.8,)
 ```
+
+## 7. 结果
+
+仅使用特征列表中的21维特征，线上B榜可达到0.97422的成绩。

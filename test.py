@@ -12,21 +12,22 @@ from scipy.stats import pearsonr
 import math
 import networkx as nx
 import lightgbm as lgb
+from collections import Counter
 from sklearn.metrics import log_loss,accuracy_score,f1_score
 sys.path.append(os.path.abspath('../src'))
 
 '''配置项
 '''
-folder_name='data/'
-train_file='data/training_set.txt'
-test_file='data/testing_set.txt'
-output_file='data/output.txt'
+folder_name='data/raw/'
+train_file='data/raw/training_set.txt'
+test_file='data/raw/testing_set.txt'
+output_file='data/raw/output.txt'
 
 '''全局变量
 '''
 train_df=pd.read_csv(train_file,sep=' ',names=['sid','tid','label'])
 test_df=pd.read_csv(test_file,sep=' ',names=['sid','tid','label'])
-node_df=pd.read_csv('data/node_information.csv',names=['id','year','title','authors','journal','abstract'])
+node_df=pd.read_csv('data/raw/node_information.csv',names=['id','year','title','authors','journal','abstract'])
 features={}
 
 '''工具函数
@@ -134,6 +135,7 @@ def get_features(df):
     return feature_df
 
 if __name__=='__main__':
+    print('正在抽取特征...')
     prepare_node_df()
     append_node_index(train_df)
     append_node_index(test_df)
@@ -184,4 +186,4 @@ if __name__=='__main__':
         for i,val in enumerate(test_ys):
             f.write('%d,%d\n'%(i,val))
     print('预测结果输出到',output_file)
-    print('验证集结果',f1_score(test_df.label,pd.read_csv(output_file).prediction))
+    print('结果输出占比',Counter(test_ys))
