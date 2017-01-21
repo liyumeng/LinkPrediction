@@ -4,7 +4,7 @@
 
 任务链接：https://inclass.kaggle.com/c/link-prediction-tu
 
-## 1. 运行说明
+## 1. 运行说明(需要LINUX环境)
 
 1. 下载语料放在data/raw文件夹下，结构如下：
 
@@ -19,7 +19,7 @@
 ## 2. run.sh脚本处理流程说明
 
 1. 自动下载LINE工具，用于生成低维稠密的网络节点向量。
-2. 自动运行process_network_data.py，根据原始语料生成LINE训练过程中使用的语料。
+2. 自动运行process_data.py，根据原始语料生成LINE训练过程中使用的语料。
 
     输入文件：
     
@@ -107,4 +107,8 @@ gbm = lgb.LGBMClassifier(objective='binary',
 
 ## 7. 结果
 
-仅使用特征列表中的21维特征，线上B榜可达到0.97422的成绩。
+仅使用特征列表中的21维特征(未添加Network Embedding及Doc2Vec)，线上B榜可达到0.97422的成绩。
+
+目前代码还有一些需要补全的地方，正在整理中
+
+有些特征可能并未其作用，甚至反而引入了样本噪音，对于特征的分析将继续进行整理......
